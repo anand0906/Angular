@@ -1,4 +1,4 @@
-<h1>Typescript</h1>
+<h1>Typescript/Angular</h1>
 <h6>Problems With JavaScript</h6>
 <ol>
 	<li>Dynamically Typed</li>
@@ -39,7 +39,7 @@
 	<li>'let' keyword(Block Level)</li>
 	<li>'const' keyword(Block Level)</li>
 </ul>
-<p>There are Basic Data Types</p>
+<p >There are Basic Data Types</p>
 <ul>
 	<li>boolean : is for the two values true and false</li>
 	<li>number :  is for numbers like 42. JavaScript does not have a special runtime value for integers, so there’s no equivalent to int or float - everything is simply number</li>

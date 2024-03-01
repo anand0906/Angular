@@ -1,8 +1,8 @@
 <h1>Angular</h1>
-<p>Angular is a popular opem-source framework for building dynamic, interactive web applications.</p>
+<p>Angular is a popular open-source framework for building dynamic, interactive web applications.</p>
 <p>It leverages the power of TypeScript, a superset of JavaScript, to ensure a more structured and scalable development experience.</p>
-<p>Angular's core strength lies in building Single Page Applications (SPA). These applications load the initial HTML page with necessary resources and then dynamically update content within that page in response to user interactions. This results in smoother, more app-like experiences within the web browser.</p>
-<p>Angular is developed and maintained by Google, ensuring a strong backing, active community, and long-term support.</p>
+<p>Angular's core strength lies in building single-page applications (SPA). These applications load the initial HTML page with the necessary resources and then dynamically update content within that page in response to user interactions. This results in smoother, more app-like experiences within the web browser.</p>
+<p>Angular is developed and maintained by Google, ensuring strong backing, active community, and long-term support.</p>
 
 <h2>Angular Development Environment Setup</h2>
 <p>To install Angular on your local system, you need the following:</p>
@@ -14,7 +14,7 @@
 <p>You can use the Angular CLI to create projects, generate application and library code, and perform a variety of ongoing development tasks such as testing, bundling, and deployment.</p>
 <p>To install the Angular CLI, open a terminal window and run the following command:</p>
 <code>npm install -g @angular/cli</code>
-<p>To Check whether angular is installed or not , run the following command</p>
+<p>To Check whether angular is installed or not, run the following command</p>
 <code>ng version</code>
 
 
@@ -35,7 +35,7 @@
 	<li><strong>TypeScript Class:</strong>A TypeScript class defines the component's behavior. It contains properties to hold data and methods to implement functionality. This is where you handle user interactions, communicate with services, and manage the component's state.</li>
 	<li><strong>HTML Template:</strong>The HTML template determines the structure and presentation of the component's view. It uses Angular's special syntax (directives, data binding, etc.) to create dynamic and interactive elements.</li>
 	<li><strong>CSS Styles:</strong>Optional but highly recommended, CSS styles define the look and feel of the component. you can use component-specific styles or global stylesheets.</li>
-	<li><strong>Metadata (@Component decorator):</strong>The @Component decorator provides Angular with the essential information about how to create and use the component. It includes:
+	<li><strong>Metadata (@Component decorator):</strong>The @Component decorator provides Angular with essential information about how to create and use the component. It includes:
 	<ul>
 		<li><strong>selector:</strong> A tag name used to insert the component into HTML templates of other components.</li>
 		<li><strong>templateUrl:</strong> The path to the HTML template.</li>
@@ -64,7 +64,7 @@
 		<li>'component-name.component.ts': The TypeScript file containing the component class.</li>
 		<li>'component-name.component.html': The HTML template associated with the component.</li>
 		<li>'component-name.component.css' (or scss): The styles for the component.</li>
-		<li>'component-name.component.spec.ts' : The unit test file for the component.</li>
+		<li>'component-name.component.spec.ts': The unit test file for the component.</li>
 	</ul>
 </ol>
 <p>You can change how ng generate component creates new components. <a href="https://angular.io/cli/generate#component-command">Check Here</a></p>
@@ -445,7 +445,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 <p>Angular provides three primary encapsulation modes:</p>
 <ul>
 	<li>Emulated (Default):</li>
-	<p>Angular achieves style scoping not through true Shadow DOM, but by emulating (resembles) its behavior.</p>
+	<p>Angular achieves style scoping not through true Shadow DOM, but by emulating (resembling) its behavior.</p>
 	<p>It adds unique attributes to elements within your component's template and modifies your CSS selectors to target those attributes specifically. </p>
 	<p> This ensures that your styles are effectively contained within the component, even without native browser support for Shadow DOM.</p>
 	<li>ShadowDom:</li>
@@ -455,7 +455,7 @@ export class TimerComponent implements OnInit, OnDestroy {
 	<p>Styles defined within a Shadow DOM are completely isolated from the rest of the document. This eliminates the risk of external styles inadvertently affecting your components and vice versa.</p>
 	<p>Ensure adequate browser support if you intend to use Shadow DOM in production. Older browsers might need polyfills.</p>
 	<li>None:</li>
-	<p>With this mode, there's no style encapsulation. Styles you define in the component become global styles, affecting the entire application. Use this with caution, mainly for intentionally creating global styles.</p>
+	<p>With this mode, there's no style encapsulation. The styles you define in the component become global styles, affecting the entire application. Use this with caution, mainly for intentionally creating global styles.</p>
 </ul>
 <p>The default Emulated mode is generally safe and provides a good level of style isolation for most use cases. If you need the absolute strongest encapsulation and have good browser support, ShadowDom is an option. None should be used sparingly.</p>
 <p>You control the view encapsulation mode for a component using the encapsulation property within the component's decorator:</p>
@@ -947,7 +947,7 @@ export class AdBannerComponent {
 <img src="https://angular.io/generated/images/guide/dynamic-component-loader/ads-example.gif">
 
 <h3>Angular Elements</h3>
-<p>Angular Elements provide a way to take your Angular components and turn them into standard custom elements (also known as Web Components). This empowers you to use your well-crafted Angular components directly within non-Angular applications or even basic HTML pages.</p>
+<p>Angular Elements provides a way to take your Angular components and turn them into standard custom elements (also known as Web Components). This empowers you to use your well-crafted Angular components directly within non-Angular applications or even basic HTML pages.</p>
 <p>Uses</p>
 <ul>
 	<li>Custom elements are a native browser feature, making Angular Elements usable in projects built with React, Vue, vanilla JavaScript, or any other framework (or even no framework at all!).</li>

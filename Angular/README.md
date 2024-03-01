@@ -129,7 +129,7 @@ export class ProductDetailsComponent {
 ```TypeScript
 <app-product-details [product]="selectedProduct"></app-product-details>
 ```
-<p>Here, <app-product-details> directly references the selector defined in the @Component decorator, instructing Angular to render the ProductDetailsComponent at this location.</p>
+<p>Here, app-product-details directly references the selector defined in the @Component decorator, instructing Angular to render the ProductDetailsComponent at this location.</p>
 
 <p>Best Practices for Component Selectors:</p>
 <ul>
@@ -335,11 +335,11 @@ export class ContentComponent implements AfterContentInit {
  export class ContainerComponent {}
 ```
 	<p>In this example, when ContainerComponent is created and ngAfterContentInit is called in ContentComponent, it logs a message indicating that the content has been initialized.</p>
-	<p>Interacting with projected content: If your component uses <ng-content> to project content into it, ngAfterContentInit is a good place to interact with that content</p>
+	<p>Interacting with projected content: If your component uses ng-content to project content into it, ngAfterContentInit is a good place to interact with that content</p>
 	<p>Accessing child components: If your component has child components, you can use ngAfterContentInit to interact with those child components after they have been initialized.</p>
 	<li>ngAfterContentChecked()</li>
 	<p>It is called after the content (projected content or child components) has been checked by Angular during every change detection cycle. This hook provides an opportunity to perform actions after Angular has checked the content and ensured that it is up to date.</p>
-	<p>Interacting with projected content: If your component uses <ng-content> to project content into it, ngAfterContentChecked can be used to interact with that content after each change detection cycle.</p>
+	<p>Interacting with projected content: If your component uses ng-content to project content into it, ngAfterContentChecked can be used to interact with that content after each change detection cycle.</p>
 
 ```Typescript
 import { Component, AfterContentChecked } from '@angular/core';
@@ -712,3 +712,262 @@ my-button {
 
 ```
 </ol>
+
+<h3>Content Projection</h3>
+<p>Content projection in Angular is a powerful feature that allows you to insert and project content from a One component into another component. This enables you to create more flexible and reusable components by separating the structure and behavior of the components.</p>
+<p>Types of Content Projection</p>
+<ol>
+	<li>Single-Slot Content Projection</li>
+	<li>Multi-Slot Content Projection</li>
+	<li>Conditional content projection</li>
+</ol>
+<h4>Single Slot Content Projection</h4>
+<p>The most basic form.</p>
+<p>You have a single ng-content tag in your component's template</p>
+<p>Any content placed between the component's opening and closing tags in the parent component is projected into that slot.</p>
+
+```html
+<div class="card">
+  <div class="card-header">
+    <ng-content></ng-content> 
+  </div>
+  <div class="card-body">
+    <p>Default card content</p>
+  </div>
+</div>
+```
+
+```TypeScript
+<app-card>
+  <h2>Custom Title</h2>
+  <img src="my-image.jpg" alt="Image">
+</app-card>
+```
+
+<p>The content placed within the app-card tags (the h2 and img) will get projected directly into the card-header section of your card component.</p>
+<p>The overall result looks as follows</p>
+
+```html
+<div class="card">
+  <div class="card-header">
+    <h2>Custom Title</h2>
+  	<img src="my-image.jpg" alt="Image">
+  </div>
+  <div class="card-body">
+    <p>Default card content</p>
+  </div>
+</div>
+```
+
+<h4>Multiple Content Projection</h4>
+<p>You can have multiple ng-content tags</p>
+<p>you can name them as tag name, attribute, CSS class, and the :not pseudo-class. to differentiate between different content insertion points</p>
+<p>When using the component, any elements in the parent component that match the specified CSS selectors will be projected into the corresponding ng-content slots.</p>
+
+```html
+<!-- parent.component.html -->
+<div>
+  <h2>Parent Component</h2>
+  <ng-content select=".header"></ng-content>
+  <ng-content></ng-content>
+</div>
+
+<!-- app.component.html -->
+<app-parent>
+  <div class="header">Header Content</div>
+  <p>Regular Content</p>
+</app-parent>
+
+```
+
+<p>In this case, the content with the class "header" is projected into the first ng-content in the parent component, and the remaining content is projected into the second ng-content.</p>
+<p>If your component includes an ng-content element without a select attribute, that instance receives all projected components that do not match any of the other ng-content elements.</p>
+
+<h4>Conditional Content Projection</h4>
+<p>This technique allows you to display projected content based on specific conditions or logic within your component. It's a powerful way to make your components even more adaptable.</p>
+<p>It refers to the ability to project different content into a child component based on certain conditions in the parent component. This feature is particularly useful when you want to customize the content that gets projected into a child component depending on specific criteria or dynamic circumstances.</p>
+
+<h5>ng-container</h5>
+<p>t acts as a grouping element without adding an extra layer to your DOM (Document Object Model). This means it won't be rendered as a real HTML element in the browser.</p>
+<p> The primary use of ng-container is with structural directives (like *ngIf, *ngFor). Structural directives alter how the DOM is shaped. ng-container gives you a clean way to apply these directives without introducing unnecessary HTML tags.</p>
+
+```html
+<ng-container *ngIf="showContent">
+  <div>Some content here</div>
+  <p>More content</p>
+</ng-container>
+```
+
+<h5>ng-template</h5>
+<p>Defines a template that isn't directly rendered. It's a blueprint for content that you can instantiate later, either conditionally or repeatedly.</p>
+<p>The content inside ng-template won't display on its own.</p>
+<p>ng-template usually works with structural directives and the NgTemplateOutlet directive to dynamically insert the template into the DOM.</p>
+
+```html
+<ng-template #errorTemplate>
+  <p class="error"> An error occurred! </p>
+</ng-template>
+
+<ng-container *ngIf="hasError; else successTemplate">
+  <ng-container *ngTemplateOutlet="errorTemplate"></ng-container>
+</ng-container>
+
+<ng-template #successTemplate>
+  <p>Success!</p> 
+</ng-template>
+```
+
+<p>In Conditional Content Projection,Using an ng-content element in these cases is not recommended, because when the consumer of a component supplies the content, that content is always initialized, even if the component does not define an ng-content element or if that ng-content element is inside of an ngIf statement.</p>
+<p>With an ng-template element, you can have your component explicitly render content based on any condition you want, as many times as you want. Angular will not initialize the content of an ng-template element until that element is explicitly rendered.</p>
+
+<h3>Dynamic Components</h3>
+<p>Dynamic components in Angular refer to the creation and rendering of components at runtime, rather than at compile time. This allows you to build more flexible and dynamic user interfaces</p>
+<p>Static applications have pre-defined components in their templates.</p>
+<p>Dynamic components are useful when:</p>
+<ul>
+	<li>You need to display components based on user interaction</li>
+	<li>You have a large number of components that are not always needed on the page</li>
+	<p>You want to create a more modular and adaptable application architecture.</p>
+</ul>
+<p>There are two primary approaches to creating dynamic components in Angular:</p>
+<ul>
+	<li>Using NgComponentOutlet:</li>
+	<li>Using the ComponentFactoryResolver Service:</li>
+</ul>
+
+<h4>Using NgComponentOutlet:</h4>
+<p>The NgComponentOutlet directive can be used to instantiate components and insert them into the current view. This directive allows you to provide a component class that should be rendered, as well as component inputs to be used during initialization.</p>
+
+```TypeScript
+
+import { Component, Input } from '@angular/core';
+
+@Component({
+  standalone: true,
+  template: `
+    <div class="job-ad">
+      <h4>{{ headline }}</h4>
+      {{ body }}
+    </div>
+  `,
+})
+export class HeroJobAdComponent {
+  @Input() headline!: string;
+  @Input() body!: string;
+}
+
+import { Component, Input } from '@angular/core';
+
+@Component({
+  standalone: true,
+  template: `
+    <div class="hero-profile">
+      <h3>Featured Hero Profile</h3>
+      <h4>{{ name }}</h4>
+      <p>{{ bio }}</p>
+      <strong>Hire this hero today!</strong>
+    </div>
+  `,
+})
+export class HeroProfileComponent {
+  @Input() name!: string;
+  @Input() bio!: string;
+}
+
+import { Injectable, Type } from '@angular/core';
+import { HeroProfileComponent } from './hero-profile.component';
+import { HeroJobAdComponent } from './hero-job-ad.component';
+
+@Injectable({ providedIn: 'root' })
+export class AdService {
+  getAds() {
+    return [
+      {
+        component: HeroProfileComponent,
+        inputs: { name: 'Dr. IQ', bio: 'Smart as they come' },
+      },
+      {
+        component: HeroProfileComponent,
+        inputs: { name: 'Bombasto', bio: 'Brave as they come' },
+      },
+      {
+        component: HeroJobAdComponent,
+        inputs: {
+          headline: 'Hiring for several positions',
+          body: 'Submit your resume today!',
+        },
+      },
+      {
+        component: HeroJobAdComponent,
+        inputs: {
+          headline: 'Openings in all departments',
+          body: 'Apply today',
+        },
+      },
+    ] as {component: Type<any>, inputs: Record<string, unknown>}[];
+  }
+}
+
+
+@Component({
+  selector: 'app-ad-banner',
+  standalone: true,
+  imports: [NgComponentOutlet, AsyncPipe],
+  template: `
+    <div class="ad-banner-example">
+      <h3>Advertisements</h3>
+      <ng-container *ngComponentOutlet="
+        currentAd.component;
+        inputs: currentAd.inputs;
+      " />
+      <button (click)="displayNextAd()">Next</button>
+    </div>
+  `
+})
+export class AdBannerComponent {
+  private adList = inject(AdService).getAds();
+
+  private currentAdIndex = 0;
+
+  get currentAd() {
+    return this.adList[this.currentAdIndex];
+  }
+
+  displayNextAd() {
+    this.currentAdIndex++;
+    // Reset the current ad index back to `0` when we reach the end of an array.
+    if (this.currentAdIndex === this.adList.length) {
+      this.currentAdIndex = 0;
+    }
+  }
+}
+```
+
+<p>Final Output</p>
+<img src="https://angular.io/generated/images/guide/dynamic-component-loader/ads-example.gif">
+
+<h3>Angular Elements</h3>
+<p>Angular Elements provide a way to take your Angular components and turn them into standard custom elements (also known as Web Components). This empowers you to use your well-crafted Angular components directly within non-Angular applications or even basic HTML pages.</p>
+<p>Uses</p>
+<ul>
+	<li>Custom elements are a native browser feature, making Angular Elements usable in projects built with React, Vue, vanilla JavaScript, or any other framework (or even no framework at all!).</li>
+	<li>This can aid in incremental migration. You can package existing Angular components as custom elements and introduce them into a legacy application built with a different technology.</li>
+	<li>Build micro-frontends: different parts of a large application can be developed independently (even using different frameworks), while retaining seamless integration.</li>
+</ul>
+<p>Steps to create</p>
+<ol>
+	<li>Create an Angular Component: Develop your Angular component as you typically would.</li>
+	<li>Use the @angular/elements Package: Install this package and its polyfills for older browser support.</li>
+	<li>createCustomElement Function: Utilize the createCustomElement function to convert your Angular component into a custom element.</li>
+	<li>Register the Custom Element: Use JavaScript's customElements.define() function to register your newly created custom element.</li>
+</ol>
+
+```TypeScript
+import { createCustomElement } from '@angular/elements';
+import { MyAngularComponent } from './my-angular.component';
+
+const customElement = createCustomElement(MyAngularComponent, { injector: this.injector });
+customElements.define('my-angular-element', customElement);
+```
+
+<p>You can use your my-angular-element tag in any HTML document as if it were any standard HTML element.</p>

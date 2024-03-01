@@ -725,6 +725,7 @@ my-button {
 <p>The most basic form.</p>
 <p>You have a single ng-content tag in your component's template</p>
 <p>Any content placed between the component's opening and closing tags in the parent component is projected into that slot.</p>
+<p>please import common module to use these examples</p>
 
 ```html
 <div class="card">

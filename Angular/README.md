@@ -972,3 +972,505 @@ customElements.define('my-angular-element', customElement);
 ```
 
 <p>You can use your my-angular-element tag in any HTML document as if it were any standard HTML element.</p>
+
+
+<h2>Templates</h2>
+<p>In Angular, templates are a fundamental part of the framework that allow you to define the structure and layout of your application's user interface. Templates in Angular are typically written in HTML and can include Angular-specific syntax and directives to bind data, handle events, and manipulate the DOM.</p>
+<p>Almost all HTML syntax is valid template syntax. However, because an Angular template is only a fragment of the UI, it does not include elements such as html, body, or base.</p>
+<h3>Interpolation</h3>
+<p>interpolation is a technique used to embed expressions within your templates, allowing you to display dynamic content based on your component's data.</p>
+<p>It acts as a one-way data binding mechanism, bringing your component's properties and expressions to life in the UI.</p>
+<p>Double curly braces: {{ expression }} is the syntax used to mark an interpolation point in the template.</p>
+<p>Expressions inside: The expression within the braces can be a reference to a component property, a valid JavaScript expression, or even a combination of both.</p>
+
+```TypeScript
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <h1>Welcome, {{ username }}!</h1>
+    <p>Your age is {{ calculateAge(birthYear) }}.</p>
+  `,
+})
+export class AppComponent {
+  username = 'John Doe';
+  birthYear = 1990;
+
+  calculateAge(year: number): number {
+    const currentYear = new Date().getFullYear();
+    return currentYear - year;
+  }
+}
+```
+
+<p> Angular evaluates the expression within the double curly braces and replaces it with the resulting value.</p>
+<h3>Template Statements</h3>
+<p>template statements are used for event binding. They allow you to respond to user actions, such as button clicks or mouse events, by executing methods defined in your Angular component</p>
+<p> Template statements are enclosed in parentheses and are used within the HTML templates to bind to events.</p>
+
+```TypeScript
+// app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <button (click)="onButtonClick()">Click me!</button>
+    <p>{{ message }}</p>
+  `,
+})
+export class AppComponent {
+  message: string = '';
+
+  onButtonClick(): void {
+    this.message = 'Button clicked!';
+  }
+}
+```
+
+<p>(click)="onButtonClick()" is a template statement that binds the onButtonClick() method to the click event of the button element.</p>
+<p>When the button is clicked, the onButtonClick() method is executed, updating the message property in the component.</p>
+<p>Template statements are enclosed in parentheses. The content inside the parentheses typically consists of an event name (e.g., click) followed by the method or expression to be executed when the event occurs.</p>
+
+<h4>Statement Context</h4>
+<p>In Angular templates, statement context refers to the specific environment within which a template statement operates. This context determines what elements the statement has access to and can interact with.</p>
+<p>	The context of a template statement can be the component class instance or the template.</p>
+<p>Typically, the statement context is the component class instance. This means that statements within a template can directly access properties and methods defined in the component class.</p>
+<p>Template statements can also access elements within their own context.</p>
+<p>Template reference variables: These are references assigned to specific DOM elements within the template, allowing the statement to interact with the element.</p>
+<p>The $event object: This object is available in event handler statements and provides details about the event that triggered the statement.</p>
+<p>Statement context has priority over global scope. This means template statements cannot directly access global variables or functions like window or console.log.
+</p>
+
+```html
+<button type="button" (click)="onSave($event)">Save</button>
+<button type="button" *ngFor="let hero of heroes" (click)="deleteHero(hero)">{{hero.name}}</button>
+<form #heroForm (ngSubmit)="onSubmit(heroForm)"> ... </form>
+```
+
+<p>The (click) event handler binds the click event on the button to the deleteHero method of the component class.</p>
+<p>Inside the deleteHero statement, hero refers to the current item being iterated over in the loop (assuming the button is placed within an *ngFor loop).</p>
+<p>This statement can access hero because it's within the context of the loop iteration, and hero is a local variable available in that context.</p>
+<p>	In this example, the context of the $event object, hero, and #heroForm is the template.</p>
+<p>	The statement context may also refer to properties of the template's own context. In the following example, the component's event handling method, onSave() takes the template's own $event object as an argument. On the next two lines, the deleteHero() method takes a template input variable, hero, and onSubmit() takes a template reference variable, #heroForm.
+</p>
+<p>	Template statements support basic assignment (=) and chaining expressions with semicolons (;) unlike template expressions. This allows for functionalities like setting variable values and executing multiple statements within a single line.</p>
+<p>Template statements do not allow:</p>
+<ul>	
+	<li>new keyword</li>
+	<li>Increment/decrement operators (++, --) and operator assignment (+=, -=, etc.) </li>
+	<li>Bitwise operators (|, &, etc.) </li>
+	<li>Pipe operator (|)</li>
+</ul>
+
+<h3>Template Binding</h3>
+<p>In Angular, binding is a powerful mechanism that allows you to connect and synchronize data between the components (the TypeScript code) and the templates (the HTML code). </p>
+<p>Creates a live connection between the component's data and the template elements.</p>
+<p>Keeps the view and the model synchronized.</p>
+<p>Allows user interactions in the view to update the model, and vice versa.</p>
+<p>There are different types of bindings in Angular</p>
+<ul>
+	<li>Interpolation Binding:</li>
+	<li>Property Binding:</li>
+	<li>Event Binding:</li>
+	<li>Two-way Binding:</li>
+</ul>
+<p>Bindings always have two parts: a <strong>target</strong> which will receive the bound value, and a <strong>template expression</strong> which produces a value from the model.</p>
+<p>Template expressions are similar to JavaScript expressions. Many JavaScript expressions are legal template expressions, with the following exceptions.</p>
+<p>You can't use JavaScript expressions that have or promote side effects, including:</p>
+<ul>
+	<li>Assignments (=, +=, -=, ...)</li>
+	<li>Operators such as new, typeof, or instanceof</li>
+	<li>Chaining expressions with ; or ,</li>
+	<li>The increment and decrement operators ++ and --</li>
+	<li>Some of the ES2015+ operators</li>
+	<li>No support for the bitwise operators such as | and &</li>
+</ul>
+<h4>Name Collison</h4>
+<p>The evaluation context of an expression in a template is a combination of:</p>
+<ul>
+	<li>Template variables: Variables defined within the current template.</li>
+	<li>Directive's context object: If the directive used in the element defines a context object.</li>
+	<li>Component's member names: Properties and methods defined in the component class.</li>
+</ul>
+<p>When a name belongs to multiple contexts, Angular follows this precedence order:</p>
+<ol>
+	<li>Template variable name: Takes highest priority.</li>
+	<li>Directive's context object name: If applicable.</li>
+	<li>Component's member names: Lowest priority.</li>
+</ol>
+<p>The best practice is to choose unique names for variables across different contexts to avoid confusion and potential errors.</p>
+
+<h3>Property Binding</h4>
+<p>Property binding in Angular is a one-way data binding technique that allows you to set the value of a property of a DOM element or a directive based on the value of a property in the component class.</p>
+<p>This binding is useful for dynamically updating the properties of HTML elements or Angular directives in response to changes in the component.</p>
+<p>Property binding is denoted by square brackets [] in the template</p>
+<p>Enclose the property name in square brackets [] within the element tag.</p>
+<p>Assign a component property to the target property using =.</p>
+
+```html
+<img alt="item" [src]="itemImageUrl">
+```
+<p>src is the target property of the img element.</p>
+<p>itemImageUrl is a component property holding the image URL.</p>
+<p>Angular evaluates the right-hand side expression (e.g., itemImageUrl) and retrieves its value.</p>
+<p>Angular sets the target property to the evaluated value, dynamically updating the element's behavior or appearance.</p>
+
+<p>Target property names often correspond to HTML attribute names (e.g., src, href, disabled).</p>
+<p>Square brackets mark dynamic evaluation. Without them, Angular treats the value as a static string.</p>
+<p>To assign a string to a component's property (such as the childItem of the ItemDetailComponent), remove square brackets</p>
+
+```html
+<app-item-detail childItem="parentItem"></app-item-detail>
+```
+
+<p>It can also be used in data sharing between two components</p>
+
+
+<h4>DOM Properties vs Html Attributes</h4>
+
+<p><strong>DOM Properties:</strong></p>
+<ul>
+	<li>JavaScript properties associated with HTML elements in the Document Object Model (DOM).</li>
+	<li>Accessible and modifiable using JavaScript code, allowing dynamic control over element behavior and appearance.</li>
+	<li>Examples: innerHTML, style, value, disabled, checked, etc.</li>
+	<li>Not directly reflected in HTML source code: Changes made through DOM properties don't always update the original HTML attribute values.</li>
+</ul>
+
+<p><strong>HTML Attributes:</strong></p>
+<ul>
+	<li>Defined within the HTML tag itself, providing information about the element and its behavior.</li>
+	<li>Usually static, defined in the HTML code and typically not meant to be changed dynamically using JavaScript.</li>
+	<li>src, href, id, class, alt, etc.</li>
+	<li>Changes made to attributes directly modify the HTML code.</li>
+</ul>
+
+<p>DOM properties allow for dynamic control of elements' appearance and behavior through JavaScript.</p>
+<li>HTML attributes provide static information about elements and are used for initial configuration.</li>
+
+<h3>Attribute Binding</h4>
+<p>Attribute binding in Angular is a technique used to set the value of an HTML element's attribute directly from a component's property. While similar to property binding, it caters to specific scenarios.</p>
+<ul>
+	<li>Targets element attributes, not DOM properties. This is useful for attributes that don't have direct DOM property counterparts</li>
+	<li> Uses the attr. prefix followed by the attribute name in square brackets []. The value is assigned using the equal sign =.</li>
+</ul>
+
+```html
+<td [attr.colspan]="columnSpan"></td>
+```
+<p>[attr.colspan]: Attribute binding for the colspan attribute.</p>
+<p>columnSpan: Component property holding the desired colspan value.</p>
+
+<p>When to use attribute binding:</p>
+<ul>
+	<li>Non-DOM property attributes: When there's no corresponding DOM property for the attribute you want to set.</li>
+	<li>Dynamic attribute values: When the attribute value needs to be determined at runtime based on component data.</li>
+	<li>Custom directives: When working with directives that expect specific attributes to be set.</li>
+</ul>
+
+<h3>Class & Style Binding</h3>
+<p>In Angular templates, class binding and style binding are powerful techniques that allow you to dynamically add, remove, or modify CSS classes and inline styles of your HTML elements based on data in your component class.</p>
+<h4>Class Binding</h4>
+<p>Dynamically manage an element's CSS classes based on component properties.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Binding Type</th>
+<th align="left">Syntax</th>
+<th align="left">Input Type</th>
+<th align="left">Example Input Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Single class binding</td>
+<td align="left"><code>[class.sale]="onSale"</code></td>
+<td align="left"><code>boolean | undefined | null</code></td>
+<td align="left"><code>true</code>, <code>false</code></td>
+</tr>
+<tr>
+<td align="left">Multi-class binding</td>
+<td align="left"><code>[class]="classExpression"</code></td>
+<td align="left"><code>string</code></td>
+<td align="left"><code>"my-class-1 my-class-2 my-class-3"</code></td>
+</tr>
+<tr>
+<td align="left">Multi-class binding</td>
+<td align="left"><code>[class]="classExpression"</code></td>
+<td align="left"><code>Record(string, boolean | undefined | null)</code></td>
+<td align="left"><code>{foo: true, bar: false}</code></td>
+</tr>
+<tr>
+<td align="left">Multi-class binding</td>
+<td align="left"><code>[class]="classExpression"</code></td>
+<td align="left"><code>Array&lt;string&gt;</code></td>
+<td align="left"><code>['foo', 'bar']</code></td>
+</tr>
+</tbody>
+</table>
+
+```html
+<button [class.active]="isActive">Click me!</button>
+```
+
+<p>The button receives the active class only when isActive (a component property) is true.</p>
+
+<h4>Style Binding</h4>
+<p>Dynamically set inline styles of an element based on component properties.</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">Binding Type</th>
+<th align="left">Syntax</th>
+<th align="left">Input Type</th>
+<th align="left">Example Input Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Single style binding</td>
+<td align="left"><code>[style.width]="width"</code></td>
+<td align="left"><code>string | undefined | null</code></td>
+<td align="left"><code>"100px"</code></td>
+</tr>
+<tr>
+<td align="left">Single style binding with units</td>
+<td align="left"><code>[style.width.px]="width"</code></td>
+<td align="left"><code>number | undefined | null</code></td>
+<td align="left"><code>100</code></td>
+</tr>
+<tr>
+<td align="left">Multi-style binding</td>
+<td align="left"><code>[<a href="api/animations/style" class="code-anchor">style</a>]="styleExpression"</code></td>
+<td align="left"><code>string</code></td>
+<td align="left"><code>"width: 100px; height: 100px"</code></td>
+</tr>
+<tr>
+<td align="left">Multi-style binding</td>
+<td align="left"><code>[<a href="api/animations/style" class="code-anchor">style</a>]="styleExpression"</code></td>
+<td align="left"><code>Record(string, string | undefined | null)</code></td>
+<td align="left"><code>{width: '100px', height: '100px'}</code></td>
+</tr>
+</tbody>
+</table>
+
+```html
+<h1 [style.color]="isError ? 'red' : 'green'">Heading</h1>
+```
+<p>The heading's color switches between red (if isError is true) and green.</p>
+
+<h3>Event Binding</h3>
+<p>Event binding in Angular allows you to capture and respond to user-generated events (such as button clicks, mouse movements, and keyboard inputs) within your application. With event binding, you can execute methods in your component class in response to these events.</p>
+<p>Binds an event occurring on an HTML element (like a click, keypress, or mouseover) to a method defined in your component class.</p>
+<p>Triggers the execution of the bound method when the event happens on the element.</p>
+<p>Enables your component to handle user interactions and react accordingly.</p>
+
+```TypeScript
+(event-name)="method-name($event)"
+```
+
+<p>(event-name): Represents the HTML event you want to listen for (e.g., (click), (keyup)).</p>
+<p>"method-name": The name of the method in your component class that you want to execute when the event occurs.</p>
+<p>($event) (optional): An optional argument representing an event object containing details about the triggered event.</p>
+
+```TypeScript
+<button (click)="handleClick($event)">Click me!</button>
+
+export class AppComponent {
+  handleClick(event: MouseEvent) {
+    alert('Button clicked!');
+    console.log('Event object:', event);
+  }
+}
+
+```
+<p>Clicking the button triggers the handleClick method in the component class.</p>
+<p>The $event argument (optional here) provides access to the event object, which contains details like the button clicked and any modifier keys pressed during the click.</p>
+
+<p>You can bind multiple events to the same element (e.g., (click)="handleClick()" (mouseover)="handleHover()").</p>
+
+<h3>Two Way Data Binding</h3>
+<p>Two-way data binding in Angular is a mechanism that establishes a synchronized connection between an element's value in the template (view) and a property in your component class (model). This means changes made in one place are automatically reflected in the other, creating a seamless flow of data.</p>
+<p>Combines property binding and event binding: It leverages both concepts to achieve two-way communication.
+</p>
+<p>Syntax: Achieved using the [(ngModel)] directive.</p>
+<p>Commonly used with forms: Ideal for scenarios where user input in form elements needs to be reflected back to the component's data and vice versa.</p>
+<p>Two-way data binding is denoted by the [(ngModel)] directive in the template. It combines the square bracket syntax of property binding ([property]) with the parentheses syntax of event binding (event).</p>
+
+```html
+<!-- Syntax for Two-Way Data Binding -->
+<element [(ngModel)]="property"></element>
+```
+<p>Here, property is a property in your component class.</p>
+<p>Consider a scenario where you want to bind an input field to a property in your component class and reflect any changes in both the input field and the component.</p>
+
+```TypeScript
+// Component class
+export class ExampleComponent {
+  inputValue = 'Initial Value';
+}
+
+<!-- Template with Two-Way Data Binding -->
+<input [(ngModel)]="inputValue" />
+
+```
+
+<p>In this example, the inputValue property is bound to the value of the input field, and any changes in the input field will automatically update the inputValue property in the component class.</p>
+
+<p>To use two-way data binding, you need to import the FormsModule in your Angular module and add it to the imports array. This module provides the ngModel directive.</p>
+
+```TypeScript
+// Import the FormsModule in your Angular module
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [
+    // other modules
+    FormsModule
+  ],
+  // other configurations
+})
+export class AppModule { }
+```
+
+<p>Behind the scenes, Angular combines property binding and event binding to achieve two-way data binding. The [(ngModel)] directive binds the value of the input field to the property in the component and listens for the input event to update the property when the user types.</p>
+
+```html
+<!-- Equivalent Syntax Combining Property and Event Binding -->
+<input [ngModel]="inputValue" (ngModelChange)="inputValue=$event" />
+```
+
+<p>Two-way data binding simplifies the code required to keep the template and component in sync, especially in scenarios where user input needs to be reflected immediately in the component and vice versa. It's important to note that two-way data binding requires the use of the FormsModule for the ngModel directive.</p>
+
+<p>Potential performance issues: Frequent updates can impact performance in large forms. Consider alternatives like one-way data binding with manual updates in complex scenarios.</p>
+<p>Use with caution: Not always necessary for simple data display. Evaluate the trade-offs based on your specific use case.</p>
+
+<h3>Pipes</h3>
+<p>Pipes in Angular are powerful tools that transform data displayed in your templates before it's presented to the user. They act like filters, manipulating the output of expressions to improve readability and user experience.</p>
+<p>Pipes always produce the same output for the same input, ensuring predictable behavior.</p>
+<p>Applied using the pipe operator (|) after an expression in the template.</p>
+<p> Angular offers pre-built pipes for common tasks and allows you to create custom ones for specific needs.</p>
+<ul>
+	<li>DatePipe: Formats a date value according to locale rules.</li>
+	<li>UpperCasePipe: Transforms text to all upper case.</li>
+	<li>LowerCasePipe: Transforms text to all lower case.</li>
+	<li>CurrencyPipe: Transforms a number to a currency string, formatted according to locale rules.</li>
+	<li>DecimalPipe: Transforms a number into a string with a decimal point, formatted according to locale rules.</li>
+	<li>PercentPipe: Transforms a number to a percentage string, formatted according to locale rules</li>
+	<li>AsyncPipe: Subscribe and unsubscribe to an asynchronous source such as an observable.</li>
+	<li>JsonPipe: Display a component object property to the screen as JSON for debugging.</li>
+	<li>More <a href="https://angular.io/api/common#pipes">Click Here</a></li>
+</ul>
+<p>To use a pipe, you apply it to a binding expression in your template using the | symbol, followed by the pipe name and any additional parameters.</p>
+
+```html
+<!-- Example: Using the uppercase pipe -->
+<p>{{ message | uppercase }}</p>
+```
+<p>In this example, the uppercase pipe is used to transform the message variable to uppercase before displaying it.</p>
+
+<p>You can chain multiple pipes together to perform multiple transformations.</p>
+
+```html
+<!-- Example: Chaining the date and uppercase pipes -->
+<p>{{ today | date:'short' | uppercase }}</p>
+```
+
+<p>In this example, the date pipe formats the today variable as a short date, and then the uppercase pipe transforms the result to uppercase.</p>
+
+<p>You can create your own custom pipes for specific transformations that aren't covered by the built-in ones. Creating a custom pipe involves implementing the PipeTransform interface.</p>
+
+```TypeScript
+// Example: Custom pipe for reversing a string
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'reverse' })
+export class ReversePipe implements PipeTransform {
+  transform(value: string): string {
+    return value.split('').reverse().join('');
+  }
+}
+
+<p>{{ message | reverse }}</p>
+
+```
+<p>Here, the reverse pipe is a custom pipe that reverses the characters of the message variable.</p>
+
+<p>The pipe operator has a higher precedence than the JavaScript ternary operator (?:).</p>
+<p>condition ? a : b | pipe ->evaluted as-> condition ? a : (b | pipe)</p>
+
+<p>If you want the pipe to apply to the result of the ternary expression, wrap the entire expression in parentheses. For example,</p>
+<p>(condition ? a : b) | pipe</p>
+
+<h3>Template Variables</h3>
+<p>Template variables in Angular provide a way to capture and work with references to elements or components in your template. These variables are declared within the template and can be used to reference elements, components, or directives for various purposes.</p>
+<p>Template variables in Angular provide a way to capture and work with references to elements or components in your template. These variables are declared within the template and can be used to reference elements, components, or directives for various purposes.</p>
+
+```html
+<!-- Example: Declaring a template variable for an input element -->
+<input #inputVar type="text" />
+```
+<p>In this example, #inputVar is a template variable declared for the input element.</p>
+
+<p>You can access the value of a template variable in the template or pass it to methods.</p>
+
+```html
+<!-- Example: Using the template variable value in the template -->
+<p>{{ inputVar.value }}</p>
+```
+<p>In this example, the value of the inputVar template variable is displayed within a paragraph.</p>
+
+<p>Template variables can be used to reference elements and interact with them in the component class</p>
+
+```TypeScript
+<!-- Example: Using a template variable to reference an element -->
+<button #btn (click)="onClick(btn)">Click me</button>
+
+// Component class
+export class ExampleComponent {
+  onClick(button: HTMLButtonElement) {
+    console.log('Button clicked!', button);
+  }
+}
+```
+
+<p>In this example, the #btn template variable is used to reference the button element, and the reference is passed to the onClick method in the component class.</p>
+
+<p>Template variables can also be used to reference components and interact with their properties or methods.</p>
+
+```html
+<!-- Example: Using a template variable to reference a component -->
+<app-child #childCmp></app-child>
+<button (click)="childCmp.doSomething()">Call Child Method</button>
+```
+
+<p>In this example, #childCmp is a template variable referencing the app-child component, and the doSomething method of the child component is called when the button is clicked.</p>
+
+<p>Angular assigns a template variable a value based on where you declare the variable:</p>
+<ul>
+	<li>If you declare the variable on a component, the variable refers to the component instance.</li>
+	<li>If you declare the variable on a standard HTML tag, the variable refers to the element.</li>
+	<li>If you declare the variable on an ng-template element, the variable refers to a TemplateRef instance which represents the template</li>
+</ul>
+
+<p>If the variable specifies a name on the right-hand side, such as #var="ngModel", the variable refers to the directive or component on the element with a matching exportAs name.</p>
+
+```TypeScript
+<form #itemForm="ngForm" (ngSubmit)="onSubmit(itemForm)">
+  <label for="name">Name</label>
+  <input type="text" id="name" class="form-control" name="name" ngModel required />
+  <button type="submit">Submit</button>
+</form>
+
+<div [hidden]="!itemForm.form.valid">
+  <p>{{ submitMessage }}</p>
+</div>
+```
+
+<p>The NgForm directive demonstrates getting a reference to a different value by referencing a directive's exportAs name. In the following example, the template variable, itemForm, appears three times separated by HTML.</p>
+<p>Without the ngForm attribute value, the reference value of itemForm would be the HTMLFormElement, <form>. If an element is an Angular Component, a reference with no attribute value will automatically reference the component instance. Otherwise, a reference with no value will reference the DOM element, even if the element has one or more directives applied to it</p>
+<p>Just like variables in JavaScript or TypeScript code, template variables are scoped to the template that declares them.</p>
+<p>Similarly, Structural directives such as *ngIf and *ngFor, or <ng-template> declarations create a new nested template scope, much like JavaScript's control flow statements like if and for create new lexical scopes. You cannot access template variables within one of these structural directives from outside of its boundaries.</p>

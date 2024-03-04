@@ -1,9 +1,10 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
+import { SecondComponent } from '../second/second.component';
 
 @Component({
   selector: 'app-myfirst',
   standalone: true,
-  imports: [],
+  imports: [SecondComponent],
   templateUrl: './myfirst.component.html',
   styleUrl: './myfirst.component.css',
 })

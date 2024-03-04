@@ -1,0 +1,11 @@
+<ng-template #content>
+  <ng-content select="#name"></ng-content>
+</ng-template>
+
+<ng-container *ngIf="show; else successTemplate">
+  <ng-container *ngTemplateOutlet="content"></ng-container>
+</ng-container>
+
+<ng-template #successTemplate>
+  <p>Success!</p>
+</ng-template>

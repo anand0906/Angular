@@ -1474,3 +1474,720 @@ export class ExampleComponent {
 <p>Without the ngForm attribute value, the reference value of itemForm would be the HTMLFormElement, <form>. If an element is an Angular Component, a reference with no attribute value will automatically reference the component instance. Otherwise, a reference with no value will reference the DOM element, even if the element has one or more directives applied to it</p>
 <p>Just like variables in JavaScript or TypeScript code, template variables are scoped to the template that declares them.</p>
 <p>Similarly, Structural directives such as *ngIf and *ngFor, or <ng-template> declarations create a new nested template scope, much like JavaScript's control flow statements like if and for create new lexical scopes. You cannot access template variables within one of these structural directives from outside of its boundaries.</p>
+
+
+<h2>DOM</h2>
+<p>DOM stands for Document Object Model. It is a programming interface for web documents that represents the structure of a document as a tree of objects.</p>
+<p>The DOM provides a way for programs to manipulate the structure, style, and content of web documents dynamically. </p>
+<p>Essentially, it serves as an interface between web browsers and JavaScript or other scripting languages.</p>
+<p>The DOM represents an HTML or XML document as a hierarchical tree structure. Each node in the tree corresponds to an element, attribute, or piece of text in the document.</p>
+<p>In the DOM, elements, attributes, and text content are represented as objects. These objects have properties that can be manipulated using scripting languages like JavaScript.</p>
+<p>The DOM allows for dynamic interaction with web documents. This means that scripts can be used to modify the document structure, content, and style in response to user actions, events, or other triggers.</p>
+<p>The DOM is designed to be platform-independent, providing a standard interface that can be used across different programming languages and platforms. This makes it a crucial part of web development, enabling consistency in manipulating documents across various browsers.</p>
+<p>Developers can use the DOM to create, delete, or modify elements and attributes in a document. This allows for the dynamic updating of the user interface without requiring a full page reload.</p>
+<p>The DOM also facilitates event handling, allowing scripts to respond to user actions such as clicks, keyboard inputs, or changes in the document.</p>
+<p>In the context of JavaScript and web development, developers commonly use the DOM API to interact with HTML documents. The API provides methods and properties to traverse and manipulate the document tree. For example, you can use JavaScript to create new elements, modify existing ones, change styles, and respond to user interactions.</p>
+<p>Here's a simple example in JavaScript that illustrates accessing an HTML element and changing its content:</p>
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DOM Example</title>
+</head>
+<body>
+
+<p id="exampleParagraph">This is a paragraph.</p>
+
+<script>
+  // Accessing the element with id "exampleParagraph" using the DOM
+  var paragraphElement = document.getElementById("exampleParagraph");
+
+  // Modifying the content of the paragraph
+  paragraphElement.innerHTML = "This paragraph has been modified using the DOM.";
+</script>
+
+</body>
+</html>
+```
+
+<p>In this example, the script uses document.getElementById to access an HTML element with the id "exampleParagraph" and then modifies its content using the innerHTML property.</p>
+
+<h2>Directive</h2>
+<p>In Angular, directives are a powerful feature that allows you to extend and manipulate the Document Object Model (DOM) within your application. Directives are used to create reusable components, apply behavior to elements, and structure the layout of your application.</p>
+<p>There are three main types of directives:</p>
+<ul>
+	<li>Component Directives</li>
+	<li>Attribute Directives</li>
+	<li>Structural Directives</li>
+</ul>
+
+<h3>Component Directives</h3>
+<p>It is the same topic we have discussed as Components.</p>
+<p>he primary concept related to components is not referred to as "Component Directives" but simply as "Components."</p>
+<p>Like other directives, they are TypeScript classes that encapsulate specific functionality for your application. This logic can include things like data processing, handling user interactions, and managing the component's state.</p>
+<p>Unlike other directives, component directives have their own template. This template defines the visual structure of the component using HTML-like syntax. It determines how the component will be displayed on the screen.</p>
+<p>Using Component Directives, It Modifies The DOM such as By combining logic with a template, they allow you to create reusable UI components that make your application well-structured, maintainable, and scalable.</p>
+
+<h3>Attribute Directives</h3>
+<p>Attribute directives in Angular are a type of directive that modifies the appearance or behavior of existing DOM elements.</p>
+<p>They don't change the DOM structure itself, but rather manipulate attributes or styles based on certain conditions.</p>
+<p>Many attribute directives are defined through modules such as the CommonModule, RouterModule and FormsModule.</p>
+<p>The most common attribute directives are as follows:</p>
+<ul>
+	<li><strong>NgClass</strong> : Adds and removes a set of CSS classes.</li>
+	<li><strong>NgStyle</strong> : Adds and removes a set of HTML styles.</li>
+	<li><strong>NgModel</strong> : Adds two-way data binding to an HTML form element.</li>
+</ul>
+
+<h4>NgClass</h4>
+<p>The ngClass directive is used to conditionally apply CSS classes to an element.</p>
+<p>This directive allows you to dynamically set styles on an element based on an expression.</p>
+<p>We can add or remove multiple CSS classes simultaneously with ngClass.</p>
+<p>To use NgClass, import CommonModule and add it to the component's imports list.</p>
+
+```html
+<p [ngClass]="{'text-large': fontSize > 20}">This paragraph can change size</p>
+```
+<p>Here, the ngClass directive adds the class text-large to the <p> element if the fontSize variable is greater than 20.</p>
+
+```html
+<div [ngClass]="{'active': isActive, 'error': hasError}">Conditional Classes</div>
+```
+
+<p>Here, the classes 'active' and 'error' are applied based on the boolean values of isActive and hasError.</p>
+
+<p>We can add classes dynamically</p>
+
+```TypeScript
+currentClasses: Record<string, boolean> = {};
+/* . . . */
+setCurrentClasses() {
+  // CSS classes: added/removed per current state of component properties
+  this.currentClasses = {
+    saveable: this.canSave,
+    modified: !this.isUnchanged,
+    special: this.isSpecial,
+  };
+}
+
+<div [ngClass]="currentClasses">This div is initially saveable, unchanged, and special.</div>
+```
+
+<h4>NgStyle</h4>
+<p>It Similar to ngClass , but here we can manage inline styles of elements</p>
+<p>This directive allows you to dynamically set styles on an element based on an expression.</p>
+<p>The ngStyle directive allows you to dynamically set styles for an element based on properties of the component.</p>
+
+```html
+<div [ngStyle]="{'color': textColor, 'font-size': fontSize + 'px'}">Dynamic Styling</div>
+<h1 [ngStyle]="{'color': isSpecial ? 'red' : 'black'}">This is a heading</h1>
+```
+
+<p>In this example, the ngStyle directive sets the color style of the h1 element to 'red' if isSpecial is true, otherwise it sets it to 'black'.</p>
+
+<h4>ngModel</h4>
+<p>It is used for two way data binding</p>
+
+
+<h4>Custome Attribute Directive</h4>
+<p>To create a directive, use the CLI command ng generate directive.</p>
+
+```
+ng generate directive highlight
+```
+<p>The CLI creates src/app/highlight.directive.ts, a corresponding test file src/app/highlight.directive.spec.ts, and declares the directive class in the AppModul</p>
+
+```
+import {Directive} from '@angular/core';
+
+@Directive({
+  standalone: true,
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {}
+```
+<p>The @Directive() decorator's configuration property specifies the directive's CSS attribute selector,</p>
+<p>Import ElementRef from @angular/core. ElementRef grants direct access to the host DOM element through its nativeElement property.</p>
+<p>Add ElementRef in the directive's constructor() to inject a reference to the host DOM element, the element to which you apply appHighlight</p>
+<p>Add logic to the HighlightDirective class that sets the background to yellow.</p>
+
+```TypeScript
+import {Directive, ElementRef} from '@angular/core';
+
+@Directive({
+  standalone: true,
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) {
+    this.el.nativeElement.style.backgroundColor = 'yellow';
+  }
+}
+```
+<p>To use the HighlightDirective, add a <p> element to the HTML template with the directive as an attribute.</p>
+
+```html
+<p appHighlight>Highlight me!</p>
+```
+
+<p>Angular creates an instance of the HighlightDirective class and injects a reference to the <p> element into the directive's constructor, which sets the p element's background style to yellow.</p>
+
+<p>The @HostListener decorator allows you to listen for DOM events (like mouse clicks, hovers, etc.) on the host element and execute specific logic when those events occur.</p>
+
+```typescript
+@Directive({
+  standalone: true,
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight('yellow');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight('');
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+```
+
+<p>The background color appears when the pointer hovers over the paragraph element and disappears as the pointer moves out.</p>
+
+<p>We can also pass parameters to directive</p>
+<p>Add an appHighlight @Input() property.</p>
+
+```typescript
+@Directive({
+  standalone: true,
+  selector: '[appHighlight]',
+})
+export class HighlightDirective {
+  @Input() appHighlight = '';
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight(appHighlight);
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight('');
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+```
+
+<p>To simultaneously apply the directive and the color, use property binding with the appHighlight directive selector, setting it equal to color.</p>
+
+```html
+export class AppComponent {
+  color = 'yellow';
+}
+
+<p [appHighlight]="color">Highlight me!</p>
+```
+
+<h3>Structural Directives</h3>
+<p>Structural directives in Angular are a powerful tool for manipulating the layout of your application's DOM (Document Object Model). Unlike attribute directives that modify existing elements, structural directives control how the DOM is built by adding, removing, or replacing elements based on certain conditions.</p>
+<p>Selector: They use a specific selector syntax, typically prefixed with an asterisk (*) to indicate where they are applied in the template. Common examples include *ngIf, *ngFor, and *ngSwitch.</p>
+<p>DOM Manipulation: They affect the structure of the DOM by adding, removing, or replacing elements. This allows you to dynamically show or hide content based on data or user interactions.</p>
+<p>While they don't have their own templates like component directives, they often work in conjunction with template (ng-template) references to define the content to be added or removed.</p>
+<p>The most common built-in structural directives are:</p>
+<ul>
+	<li>NgIf</li>
+	<li>NgFor</li>
+	<li>NgSwitch</li>
+</ul>
+<p>To use built-in structural directives, import <strong>CommonModule</strong> and add it to the component's imports list.</p>
+<h4>NgIf</h4>
+<p>We can add or remove an element by applying an NgIf directive to a host element.</p>
+<p>This directive conditionally includes a block of HTML code in the template. If the expression provided to *ngIf evaluates to true, the element and its content are displayed in the DOM. Otherwise, they are removed.</p>
+<p>When NgIf is false, Angular removes an element and its descendants from the DOM. Angular then disposes of their components, which frees up memory and resources.</p>
+
+```html
+<div *ngIf="isVisible">Visible if true</div>
+```
+<p>In this example, the content of the <div> is only rendered if the isVisible property is true.</p>
+
+<h4>NgFor</h4>
+<p>This directive iterates over an array or collection of data and dynamically creates elements for each item. It provides a way to loop through data and display it in a structured format within your template.</p>
+<p>Angular translates this instruction into an ng-template around the host element, then uses this template repeatedly to create a new set of elements and bindings for each item in the list</p>
+<p>Example : NgFor directive to present a list of items.</p>
+<ol>
+	<li>Define a block of HTML that determines how Angular renders a single item.</li>
+	<li>To list your items, assign the shorthand let item of items to *ngFor.</li>
+	<li>The string "let item of items" instructs Angular to do the following</li>
+	<ul>
+		<li>Store each item in the items array in the local item looping variable</li>
+		<li>Make each item available to the templated HTML for each iteration</li>
+		<li>Translate "let item of items" into an ng-template around the host element</li>
+		<li>Repeat the ng-template for each item in the list</li>
+	</ul>
+</ol>
+
+```html
+<div *ngFor="let item of items">{{item.name}}</div>
+```
+
+<p>To repeat a component element, apply *ngFor to the selector. In the following example, the selector is app-item-detail.</p>
+
+```html
+<app-item-detail *ngFor="let item of items" [item]="item"></app-item-detail>
+```
+
+<p> You can also access the index of the current item within the loop</p>
+<p>In the *ngFor, add a semicolon and let i=index to the shorthand. The following example gets the index in a variable named i and displays it with the item name.</p>
+
+```html
+<div *ngFor="let item of items; let i=index">{{i + 1}} - {{item.name}}</div>
+```
+
+<p>The index property of the NgFor directive context returns the zero-based index of the item in each iteration.</p>
+
+<p>By default, ngFor tracks items by their identity. If your items don't have unique identifiers, you can use the trackBy property to specify a custom tracking function.</p>
+<p>Reduce the number of calls your application makes to the server by tracking changes to an item list. With the *ngFor trackBy property, Angular can change and re-render only those items that have changed, rather than reloading the entire list of items.</p>
+<p>Add a method to the component that returns the value NgFor should track. In this example, the value to track is the item's id. If the browser has already rendered id, Angular keeps track of it and doesn't re-query the server for the same id.</p>
+
+```TypeScript
+trackByItems(index: number, item: Item): number {
+  return item.id;
+}
+
+<div *ngFor="let item of items; trackBy: trackByItems">
+  ({{item.id}}) {{item.name}}
+</div>
+```
+
+<h4>NgContainer</h4>
+<p>ng-container is a special element that acts as a wrapper for other elements or directives. It doesn't represent an HTML element itself and isn't included in the final rendered DOM</p>
+<p>ng-container allows you to group elements together without introducing an extra DOM element. This can be helpful for organizing your template and applying directives to a group of elements at once</p>
+<p>Use ng-container when there's no single element to host the directive.</p>
+<p>It can be used specifically with structural directives like *ngIf, *ngFor, or *ngSwitch to avoid adding unnecessary elements to the DOM. Since ng-container itself isn't rendered, it keeps the DOM structure clean.</p>
+<p>When using *ngIf to conditionally render a block of elements, you might want to avoid adding an extra element (like a <div>) just for the conditional logic. ng-container can group those elements without affecting the DOM.</p>
+
+```html
+<ng-container *ngIf="isLoggedIn">
+  <h2>Welcome, {{ username }}!</h2>
+  <p>You can now view your profile information.</p>
+</ng-container>
+```
+
+<p>Similarly, when iterating with *ngFor, you might have additional elements within the loop that you don't want to clutter the DOM structure. ng-container can be used to group them.</p>
+
+```html
+<ul>
+  <ng-container *ngFor="let item of items">
+    <li>{{ item.name }}</li>
+    <span>{{ item.description }}</span>
+  </ng-container>
+</ul>
+
+```
+
+<p>Simply. its an alternative for span or div </p>
+
+<h4>ngSwitch</h4>
+<p>ngSwitch is a structural directive in Angular that acts like a switch statement for your templates. It allows you to conditionally display different sections of content based on the value of an expression. This is useful for scenarios where you want to display different UI elements depending on a certain condition.</p>
+
+```html
+<div [ngSwitch]="selectedValue">
+  <div *ngSwitchCase="'option1'">Content for option 1</div>
+  <div *ngSwitchCase="'option2'">Content for option 2</div>
+  <div *ngSwitchDefault>Default content</div>
+</div>
+```
+
+<ul>
+	<li>[ngSwitch]="selectedValue": This attribute binds the switch expression to a property in your component class (selectedValue in this example). The value of this property will determine which case is displayed.</li>
+	<li>*ngSwitchCase="'option1'": This directive defines a case for a specific switch expression value. The quoted string ('option1') represents the value to match. You can have multiple cases for different conditions.</li>
+	<li>*ngSwitchDefault: This optional directive defines the default content to display if none of the switch cases match the expression value.</li>
+</ul>
+
+
+<p>To prevent expression evaluation in the browser, add ngNonBindable to the host element. ngNonBindable deactivates interpolation, directives, and binding in templates.</p>
+
+```html
+<p>Use ngNonBindable to stop evaluation.</p>
+<p ngNonBindable>This should not evaluate: {{ 1 + 1 }}</p>
+```
+
+<p>In the Above example, the expression {{ 1 + 1 }} renders just as it does in your code editor, and does not display 2.</p>
+
+<p>Applying ngNonBindable to an element stops binding for that element's child elements. However, ngNonBindable still lets directives work on the element where you apply ngNonBindable. In the following example, the appHighlight directive is still active but Angular does not evaluate the expression {{ 1 + 1 }}.</p>
+
+```html
+<h3>ngNonBindable with a directive</h3>
+<div ngNonBindable [appHighlight]="'yellow'">This should not evaluate: {{ 1 +1 }}, but will highlight yellow.
+</div>
+```
+
+<p>If you apply ngNonBindable to a parent element, Angular disables interpolation and binding of any sort, such as property binding or event binding, for the element's children.</p>
+
+<h4>Structural directive shorthand</h4>
+<p>When structural directives are applied they generally are prefixed by an asterisk, *, such as *ngIf</p>
+<p>This convention is shorthand that Angular interprets and converts into a longer form. Angular transforms the asterisk in front of a structural directive into an <ng-template> that surrounds the host element and its descendants.</p>
+
+```html
+<div *ngIf="hero" class="name">{{hero.name}}</div>
+
+<ng-template [ngIf]="hero">
+  <div class="name">{{hero.name}}</div>
+</ng-template>
+
+<!---->
+<div
+  *ngFor="let hero of heroes; let i=index; let odd=odd; trackBy: trackById"
+  [class.odd]="odd">
+  ({{i}}) {{hero.name}}
+</div>
+
+<ng-template ngFor let-hero [ngForOf]="heroes"
+  let-i="index" let-odd="odd" [ngForTrackBy]="trackById">
+  <div [class.odd]="odd">
+    ({{i}}) {{hero.name}}
+  </div>
+</ng-template>
+```
+
+<h4>Custom Structural Directive</h4>
+<p>Using the Angular CLI, run the following command, where unless is the name of the directive:</p>
+
+```
+ng generate directive unless
+```
+<p>Angular creates the directive class and specifies the CSS selector, appUnless, that identifies the directive in a template.</p>
+
+<p>mport Input, TemplateRef, and ViewContainerRef.</p>
+
+```typescript
+import {Directive, Input, TemplateRef, ViewContainerRef} from '@angular/core';
+
+@Directive({
+  standalone: true,
+  selector: '[appUnless]',
+})
+export class UnlessDirective {
+}
+```
+
+<p>Inject TemplateRef and ViewContainerRef in the directive constructor as private variables.</p>
+
+```TypeScript
+constructor(
+  private templateRef: TemplateRef<any>,
+  private viewContainer: ViewContainerRef,
+) {}
+```
+
+<p>The UnlessDirective creates an embedded view from the Angular-generated ng-template and inserts that view in a view container adjacent to the directive's original p host element.
+TemplateRef helps you get to the ng-template contents and ViewContainerRef accesses the view container.</p>
+
+<p>Add an appUnless @Input() property with a setter.</p>
+
+```TypeScript
+@Input() set appUnless(condition: boolean) {
+  if (!condition && !this.hasView) {
+    this.viewContainer.createEmbeddedView(this.templateRef);
+    this.hasView = true;
+  } else if (condition && this.hasView) {
+    this.viewContainer.clear();
+    this.hasView = false;
+  }
+}
+```
+
+<p>Angular sets the appUnless property whenever the value of the condition changes.</p>
+<ul>
+	<li>If the condition is falsy and Angular hasn't created the view previously, the setter causes the view container to create the embedded view from the template</li>
+	<li>If the condition is truthy and the view is currently displayed, the setter clears the container, which disposes of the view</li>
+</ul>
+
+```TypeScript
+import {Directive, Input, TemplateRef, ViewContainerRef} from '@angular/core';
+
+/**
+ * Add the template content to the DOM unless the condition is true.
+ */
+@Directive({
+  standalone: true,
+  selector: '[appUnless]',
+})
+export class UnlessDirective {
+  private hasView = false;
+
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef,
+  ) {}
+
+  @Input() set appUnless(condition: boolean) {
+    if (!condition && !this.hasView) {
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.hasView = true;
+    } else if (condition && this.hasView) {
+      this.viewContainer.clear();
+      this.hasView = false;
+    }
+  }
+}
+```
+
+
+<h3>Host Directives</h3>
+<p>Host directives in Angular are a unique type of directive specifically designed to add behaviors directly to the element that hosts the directive.</p>
+<p> Unlike attribute directives that modify existing elements or structural directives that manipulate the DOM layout, host directives focus on attaching functionalities to the host element itself.</p>
+<p>You apply directives to a component by adding a hostDirectives property to a component's decorator. We call such directives host directives.</p>
+<p>In this example, we apply the directive MenuBehavior to the host element of AdminMenu. This works similarly to applying the MenuBehavior to the admin-menu element in a template.</p>
+
+```typescript
+@Component({
+  standalone: true,
+  selector: 'admin-menu',
+  template: 'admin-menu.html',
+  hostDirectives: [MenuBehavior],
+})
+export class AdminMenu { }
+```
+<p>When the framework renders a component, Angular also creates an instance of each host directive. The directives' host bindings apply to the component's host element. </p>
+<p>Angular applies host directives statically at compile time.</p>
+<p>Directives used in hostDirectives must be standalone: true.</p>
+<p>Angular ignores the selector of directives applied in the hostDirectives property.</p>
+
+<p>When you apply hostDirectives to your component, the inputs and outputs from the host directives are not included in your component's API by default. You can explicitly include inputs and outputs in your component's API by expanding the entry in hostDirectives:</p>
+
+```typescript
+@Component({
+  standalone: true,
+  selector: 'admin-menu',
+  template: 'admin-menu.html',
+  hostDirectives: [{
+    directive: MenuBehavior,
+    inputs: ['menuId'],
+    outputs: ['menuClosed'],
+  }],
+})
+export class AdminMenu { }
+
+<admin-menu menuId="top-menu" (menuClosed)="logMenuClosed()">
+```
+
+```typescript
+@Component({
+  standalone: true,
+  selector: 'admin-menu',
+  template: 'admin-menu.html',
+  hostDirectives: [{
+    directive: MenuBehavior,
+    inputs: ['menuId: id'],
+    outputs: ['menuClosed: closed'],
+  }],
+})
+export class AdminMenu { }
+
+<admin-menu id="top-menu" (closed)="logMenuClosed()">
+```
+
+<p><strong>@HostBinding</strong>: This decorator allows you to bind properties of the directive class to attributes or properties of the host element. This enables dynamic changes to the host element based on the directive's logic.</p>
+<p><strong>@HostListener</strong>: This decorator is used to listen for DOM events (clicks, hovers, etc.) that occur on the host element. You can define functions within the directive class to handle these events.</p>
+
+<p>You can also add hostDirectives to other directives, in addition to components. This enables the transitive aggregation of multiple behaviors.</p>
+<p>For More Info : <a href="https://angular.io/guide/directive-composition-api">Click Here</a></p>
+
+
+<h2>Dependency Injection</h2>
+<p>Dependency Injection (DI) is a fundamental design pattern in Angular that promotes loose coupling between different parts of your application. It essentially manages how components and services acquire the objects (dependencies) they need to function.</p>
+<p>Two main roles exist in the DI system: dependency consumer and dependency provider.</p>
+<ul>
+	<li><strong>Dependency Consumer :</strong> A class which need some other class or object to perform task</li>
+	<li><strong>Dependency Provider :</strong>An object or service that a component or another service needs to perform its work. For example, a component might depend on a service to fetch data from an API.</li>
+	<li><strong>Injector:</strong>A central service responsible for creating and providing dependencies throughout the application. There's a hierarchical structure of injectors, with a root injector at the application level.</li>
+</ul>
+
+<h3>Creating Injectable Service</h3>
+<p>Angular CLI provides a command to create a new service.</p>
+<p>Run this Angular CLI command:</p>
+
+```
+ng generate service heroes/hero
+```
+<p>This command creates the following default HeroService.</p>
+
+```typescript
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class HeroService {
+
+}
+```
+
+<p>The @Injectable() decorator specifies that Angular can use this class in the DI system. The metadata, providedIn: 'root', means that the HeroService is visible throughout the application.</p>
+<p>Add a getHeroes() method that returns the heroes from mock.heroes.ts to get the hero mock data:</p>
+
+```typescript
+import { Injectable } from '@angular/core';
+import { HEROES } from './mock-heroes';
+
+@Injectable({
+  // declares that this service should be created
+  // by the root application injector.
+  providedIn: 'root',
+})
+export class HeroService {
+  getHeroes() { return HEROES; }
+}
+```
+
+<p>To inject a service as a dependency into a component, you can use component's constructor() and supply a constructor argument with the dependency type.</p>
+<p>he following example specifies the HeroService in the HeroListComponent constructor. The type of the heroService is HeroService. Angular recognizes the HeroService as a dependency, since that class was previously annotated with the @Injectable decorator.</p>
+
+```typescript
+constructor(heroService: HeroService)
+```
+
+<p>When a service depends on another service, follow the same pattern as injecting into a component. In the following example HeroService depends on a Logger service to report its activities.</p>
+
+```typescrit
+import { Injectable } from '@angular/core';
+import { HEROES } from './mock-heroes';
+import { Logger } from '../logger.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class HeroService {
+
+  constructor(private logger: Logger) {  }
+
+  getHeroes() {
+    this.logger.log('Getting heroes ...');
+    return HEROES;
+  }
+}
+```
+
+<p>In this example, the getHeroes() method uses the Logger service by logging a message when fetching heroes.</p>
+
+<p>The Creating and injecting services topic describes how to use classes as dependencies.,Besides classes, you can also use other values such as Boolean, string, date, and objects as dependencies. Angular DI provides the necessary APIs to make the dependency configuration flexible, so you can make those values available in DI.</p>
+
+<p>If you specify the service class as the provider token, the default behavior is for the injector to instantiate that class using the new operator.</p>
+<p>In the following example, the Logger class provides a Logger instance.</p>
+
+```TypeScript
+providers: [Logger],
+```
+
+<p>You can, however, configure a DI to use a different class or any other different value to associate with the Logger class. So when the Logger is injected, this new value is used instead.</p>
+<p>In fact, the class provider syntax is a shorthand expression that expands into a provider configuration, defined by the Provider interface.</p>
+<p>Angular expands the providers value in this case into a full provider object as follows:</p>
+
+```TypeScript
+providers: [{ provide: Logger, useClass: Logger }]
+```
+
+<p>The expanded provider configuration is an object literal with two properties:</p>
+<ul>
+	<li>The provide property holds the token that serves as the key for both locating a dependency value and configuring the injector.</li>
+	<li>The second property is a provider definition object, which tells the injector how to create the dependency value. The provider-definition key can be one of the following:</li>
+	<ul>
+		<li>useClass - this option tells Angular DI to instantiate a provided class when a dependency is injected</li>
+		<li>useExisting - allows you to alias a token and reference any existing one.</li>
+		<li>useFactory - allows you to define a function that constructs a dependency.</li>
+		<li>useValue - provides a static value that should be used as a dependency.</li>
+	</ul>
+</ul>
+
+<h4>Class providers: useClass</h4>
+<p>The useClass provider key lets you create and return a new instance of the specified class.</p>
+
+```typescript
+[{ provide: Logger, useClass: BetterLogger }]
+```
+
+<p>The BetterLogger class would be instantiated when the Logger dependency is requested in a component or any other class.</p>
+
+<h4>Alias providers: useExisting</h4>
+<p>The useExisting provider key lets you map one token to another. In effect, the first token is an alias for the service associated with the second token, creating two ways to access the same service object.</p>
+
+<p>The useExisting provider key lets you map one token to another. In effect, the first token is an alias for the service associated with the second token, creating two ways to access the same service object.</p>
+
+```TypeScript
+[ NewLogger,
+  // Alias OldLogger w/ reference to NewLogger
+  { provide: OldLogger, useExisting: NewLogger}]
+```
+
+<p>Ensure you do not alias OldLogger to NewLogger with useClass, as this creates two different NewLogger instances.</p>
+
+<h4>Factory providers: useFactory</h4>
+<p>The useFactory provider key lets you create a dependency object by calling a factory function. With this approach you can create a dynamic value based on information available in the DI and elsewhere in the app.</p>
+
+```TypeScript
+constructor(
+  private logger: Logger,
+  private isAuthorized: boolean) { }
+
+getHeroes() {
+  const auth = this.isAuthorized ? 'authorized ' : 'unauthorized';
+  this.logger.log(`Getting heroes for ${auth} user.`);
+  return HEROES.filter(hero => this.isAuthorized || !hero.isSecret);
+}
+
+const heroServiceFactory = (logger: Logger, userService: UserService) =>
+new HeroService(logger, userService.user.isAuthorized);
+
+export const heroServiceProvider =
+  { provide: HeroService,
+    useFactory: heroServiceFactory,
+    deps: [Logger, UserService]
+  };
+```
+
+<p>The useFactory field specifies that the provider is a factory function whose implementation is heroServiceFactory.</p>
+<p>he deps property is an array of provider tokens. The Logger and UserService classes serve as tokens for their own class providers. The injector resolves these tokens and injects the corresponding services into the matching heroServiceFactory factory function parameters.</p>
+
+<h4>Value providers: useValue</h4>
+<p>The useValue key lets you associate a fixed value with a DI token. Use this technique to provide runtime configuration constants such as website base addresses and feature flags. You can also use a value provider in a unit test to provide mock data in place of a production data service. The next section provides more information about the useValue key.</p>
+
+<h4>InjectionToken</h4>
+<p>The InjectionToken class provides a way to create unique tokens that can be used to identify and inject dependencies.</p>
+<p>It is used to create custome token name (provide : Key value) for non-class dependencies</p>
+<p>Token: In the context of Angular DI, a token is a unique identifier that is used to associate a particular dependency with a specific value or provider. Tokens are typically instances of classes, and Angular uses them to look up and resolve dependencies.</p>
+<p>InjectionToken Class: The InjectionToken class is a way to create custom tokens. It is often used when you need to inject a value or service that doesn't have a corresponding class. For example, when injecting configuration values or third-party services.
+
+Here's an example of creating an InjectionToken:</p>
+
+```typescript
+import { InjectionToken } from '@angular/core';
+
+export const MY_CUSTOM_TOKEN = new InjectionToken<string>('MyCustomToken');
+```
+
+<p>In this example, MY_CUSTOM_TOKEN is an instance of InjectionToken that is used to identify a specific dependency.</p>
+
+<p>Providing Values with InjectionToken: Once you have an InjectionToken, you can use it in the providers array of an Angular module to associate it with a particular value or provider. This allows Angular to resolve and inject the dependency where needed.</p>
+
+```Typescript
+import { NgModule, Inject } from '@angular/core';
+import { MY_CUSTOM_TOKEN } from './path-to-your-token';
+
+@NgModule({
+  providers: [
+    { provide: MY_CUSTOM_TOKEN, useValue: 'This is a custom value' }
+  ]
+})
+export class MyModule { }
+```
+<p>Now, whenever you inject MY_CUSTOM_TOKEN in a component or service, Angular will provide the value 'This is a custom value'.</p>
+
+<p>InjectionToken is commonly used when you need to inject non-class values, such as configuration settings, strings, or instances of third-party libraries. It provides a way to avoid potential naming conflicts and ensures that dependencies are properly resolved.</p>

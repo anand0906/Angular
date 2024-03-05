@@ -1,0 +1,7 @@
+<p>Interpolation : {{ name }}</p>
+<p>Interpolation : {{ 1 + 1 }}</p>
+<p>Interpolation : {{ myfunc() }}</p>
+<p>Interpolation : {{ "Anand" == name ? myfunc() : name }}</p>
+
+<input [attr.value]="name" (change)="myfunc2()" />
+<input [value]="name" (change)="myfunc2()" />

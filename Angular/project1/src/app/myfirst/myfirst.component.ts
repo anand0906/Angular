@@ -1,10 +1,11 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { SecondComponent } from '../second/second.component';
+import { BindingComponent } from '../binding/binding.component';
 
 @Component({
   selector: 'app-myfirst',
   standalone: true,
-  imports: [SecondComponent],
+  imports: [SecondComponent, BindingComponent],
   templateUrl: './myfirst.component.html',
   styleUrl: './myfirst.component.css',
 })

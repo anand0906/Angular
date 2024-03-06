@@ -2191,3 +2191,109 @@ export class MyModule { }
 <p>Now, whenever you inject MY_CUSTOM_TOKEN in a component or service, Angular will provide the value 'This is a custom value'.</p>
 
 <p>InjectionToken is commonly used when you need to inject non-class values, such as configuration settings, strings, or instances of third-party libraries. It provides a way to avoid potential naming conflicts and ensures that dependencies are properly resolved.</p>
+
+
+
+<h2>NgModules</h2>
+<p>An NgModule groups related functionalities like components, directives, pipes, and services together. This makes your code more maintainable and easier to understand. Imagine a feature like a user profile. An NgModule could contain all the components, directives, pipes, and services specific to user profiles.</p>
+<p>NgModules configure how Angular creates objects (services) that your components rely on. This process is called dependency injection. By specifying providers in an NgModule, you tell Angular which services are available for use within that module and its child modules.</p>
+<p>Not all components created in an NgModule are meant to be used everywhere. NgModules control which components are visible outside the module through the exports property. Components listed in exports can be used in templates of other NgModules.</p>
+<p>NgModules allow you to create feature modules that represent specific functionalities within your application. This promotes modularity and reusability of code. You can even lazy load feature modules, meaning they are loaded only when needed, improving initial load times of your application.</p>
+<p>Angular libraries are NgModules, such as FormsModule, HttpClientModule, and RouterModule. Many third-party libraries are available as NgModules such as Material Design, Ionic, and AngularFire2.</p>
+
+<p>An NgModule is defined using the @NgModule decorator in TypeScript.</p>
+<p>The @NgModule decorator takes a metadata object that describes how the module should be compiled, initialized, and used in the application.</p>
+<p>There are five main meta properties as listed below:</p>
+<ul>
+	<li>Declarations</li>
+	<li>Exports</li>
+	<li>Imports</li>
+	<li>Bootstrap</li>
+	<li>Providers</li>
+</ul>
+
+<h3>Declarations</h3>
+<p>The declarations array in the @NgModule decorator lists the components, directives, and pipes that belong to the module. These are the building blocks of the module.</p>
+
+```TypeScript
+declarations : [
+                 Components,
+                 Directives,
+                 Pipes
+               ]
+```
+
+<h3>Exports</h3>
+<p>The exports array in the @NgModule decorator lists the components, directives, and pipes that should be available for other modules to use. This is useful for creating shared modules.</p>
+<p>When module A is imported by module B, then we have to export the module A in order to be used by other modules. By exporting module A, we can use any of the components, directives, services or pipes present in module A in any imported module.</p>
+<p>This is based on the object oriented programming concept, where the components, directives, and pipes are by default private and we need to add them in the export module to make it usable by other modules. It looks like:</p>
+
+```TypeScript
+exports : [
+            PublicComponents,
+            PublicDirectives,
+            PublicPipes
+	      ]
+```
+
+<h3>Imports</h3>
+<p>The imports array in the @NgModule decorator specifies other modules whose exported components, directives, or pipes should be available for use within this module. It allows you to organize your application into feature modules.</p>
+<p>all the exported components and pipes from other modules can be imported in a module by declaring them in an import section of NgModule.</p>
+
+```TypeScript
+imports : [
+            ModuleA,
+            ModuleB,
+            ModuleC
+          ]
+```
+
+<h3>Providers</h3>
+<p>The providers array in the @NgModule decorator is used to configure the dependency injection system. It includes the services that the module contributes to the application's dependency injection system.</p>
+<p>n the providers property, we provide all the data providers like services and auth guards here. So these services can be used in the declared module and all the modules which import this particular module.</p>
+<p>Services by default are ‘providedIn’ or attached to the root module, thus available by any code in the application essentially.</p>
+<p>Services can instead be provided by a specific module, but we also need to specify that in the ‘providedIn’ property of the ‘@Injectable’ decorator with 'any' .</p>
+```TypeScript
+providers : [
+               Services,
+               Guards
+            ]
+```
+
+<h3>BootStrap</h3>
+<p>The bootstrap property in the @NgModule decorator specifies the root component that Angular should bootstrap when the application starts. This is typically the main component of the application.</p>
+<p>The root component that Angular creates and inserts into the index.html host web page.</p>
+
+```TypeScript
+bootstrap : [
+	          RootComponent
+	        ]
+```
+
+<p>An example of NgModule would look like below:</p>
+
+```TypeScript
+import { NgModule }      from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+@NgModule({
+	imports: [ BrowserModule ],
+	providers: [ Logger ],
+	declarations: [ AppComponent ],
+	exports:[ AppComponent ],
+	bootstrap:[ AppComponent ]
+})
+export class AppModule {
+
+}
+```
+
+<p>An Angular application needs at least one module that serves as the root module. As you add features to your app, you can add them in modules. The following are frequently used Angular modules with examples of some of the things they contain:</p>
+<ul>
+	<li>BrowserModule : To run your application in a browser.</li>
+	<li>CommonModule : To use directives such as NgIf and NgFor..etc.</li>
+	<li>FormsModule : To build template driven forms.</li>
+	<li>ReactiveFormsModule : To build template driven forms</li>
+	<li>RouterModule : To use RouterLink, .forRoot(), and .forChild().</li>
+	<li>HttpClientModule : To communicate with a server using the HTTP protocol.</li>
+</ul>

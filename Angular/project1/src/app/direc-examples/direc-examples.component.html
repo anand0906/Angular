@@ -1,0 +1,11 @@
+<p [ngClass]="classes" [ngStyle]="styles" *ngIf="visible">
+  direc-examples works!
+</p>
+<p *ngFor="let item of items; let i = index; trackBy: trackByItems">{{ i }}</p>
+
+<ul>
+  <ng-container *ngFor="let item of items">
+    <li>{{ item }}</li>
+    <span>Anand</span>
+  </ng-container>
+</ul>

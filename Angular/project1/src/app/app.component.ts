@@ -8,11 +8,17 @@ import {
 import { RouterOutlet } from '@angular/router';
 import { MyfirstComponent } from './myfirst/myfirst.component';
 import { SecondComponent } from './second/second.component';
+import { DirecExamplesComponent } from './direc-examples/direc-examples.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MyfirstComponent, SecondComponent],
+  imports: [
+    RouterOutlet,
+    MyfirstComponent,
+    SecondComponent,
+    DirecExamplesComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

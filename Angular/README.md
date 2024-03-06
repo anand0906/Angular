@@ -2015,7 +2015,7 @@ export class AdminMenu { }
 <p>Angular CLI provides a command to create a new service.</p>
 <p>Run this Angular CLI command:</p>
 
-```
+```typescript
 ng generate service heroes/hero
 ```
 <p>This command creates the following default HeroService.</p>
@@ -2057,7 +2057,7 @@ constructor(heroService: HeroService)
 
 <p>When a service depends on another service, follow the same pattern as injecting into a component. In the following example HeroService depends on a Logger service to report its activities.</p>
 
-```typescrit
+```typescript
 import { Injectable } from '@angular/core';
 import { HEROES } from './mock-heroes';
 import { Logger } from '../logger.service';

@@ -466,3 +466,291 @@ searchHeroes(term: string): Observable<Hero[]> {
 ```Typescript
 const params = new HttpParams({fromString: 'name=foo'});
 ```
+
+<h2>Interceptor</h2>
+<p>Interceptors in Angular's HttpClient are classes that act as middleware for HTTP requests and responses. They provide a way to intercept these communications and perform actions on them before they reach your application or the server</p>
+<p><strong>Modify Requests:</strong>Interceptors can transform outgoing requests by adding headers, changing URLs, or manipulating the request body before it's sent. This is useful for tasks like adding authentication tokens or handling specific content types.</p>
+<p><strong>Modify Responses:</strong> Similarly, they can intercept incoming responses and modify them before they reach your components. This could involve parsing JSON responses, handling errors centrally, or transforming the response data.</p>
+<p><strong>Perform Common Tasks:</strong>By implementing logic in interceptors, you can avoid repetitive code in your application. Common use cases include adding logging for all requests, showing loading indicators during requests, or handling authorization errors globally.</p>
+<p>Here are some advantages of using interceptors:</p>
+<ul>
+  <li>Centralized Logic: By implementing common HTTP operations in interceptors, you keep your application code clean and maintainable.</li>
+  <li>Improved Reusability: The functionality defined in an interceptor can be reused throughout your application for any HTTP request.</li>
+  <li>Modular Design: Interceptors promote modularity by separating concerns related to HTTP communication from your application logic.
+  </li>
+</ul>
+<h3>Implementation</h3>
+<p>Here's how to implement an interceptor in Angular:</p>
+<ol>
+  <li><strong>Creating the Interceptor Class:</strong></li>
+  <p>Begin by creating a new service using the Angular CLI:</p>
+  <code>
+    ng generate service my-interceptor
+  </code>
+  <p>This generates a new service file named my-interceptor.service.ts in your src/app directory.</p>
+  <p>Open the generated service file and update it to implement the HttpInterceptor interface. This interface defines a single method called intercept.</p>
+  <code>
+    import { Injectable } from '@angular/core';
+    import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+    import { Observable } from 'rxjs';
+
+    @Injectable()
+    export class MyInterceptor implements HttpInterceptor {
+
+      intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        // Your interceptor logic here
+        return next.handle(req);
+      }
+    }
+  </code>
+  <li><strong>Implementing the intercept Method:</strong></li>
+  <p>The intercept method takes two arguments:</p>
+  <ul>
+    <li>req: The outgoing HttpRequest object.</li>
+    <li>next: The HttpHandler object, which is used to continue the request chain.</li>
+  </ul>
+  <p>Inside the intercept method, you can modify the request or response in various ways. Here are some examples:</p>
+  <p>Adding common header</p>
+
+```Typescript
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+      const authToken = 'your_auth_token';
+      const authReq = req.clone({ setHeaders: { Authorization: `Bearer ${authToken}` } });
+      return next.handle(authReq);
+    }
+```
+  <p>Handling errors globally:</p>
+
+```Typescript
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+      return next.handle(req)
+        .catch(error => {
+          // Handle errors here (e.g., display a toast message)
+          return throwError(error);
+        });
+    }
+```
+  <li><strong>Registering the Interceptor:</strong></li>
+  <p>To use your interceptor in your application, you need to register it with the HttpClient. This is done by providing the interceptor class in the HTTP_INTERCEPTORS token during the HttpClientModule configuration in your AppModule.</p>
+
+```Typescript
+  import { NgModule } from '@angular/core';
+  import { BrowserModule } from '@angular/platform-browser';
+  import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+
+  import { AppComponent } from './app.component';
+  import { MyInterceptor } from './my-interceptor.service';
+
+  @NgModule({
+    declarations: [
+      AppComponent
+    ],
+    imports: [
+      BrowserModule,
+      HttpClientModule,
+    ],
+    providers: [
+      { provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true }
+    ],
+    bootstrap: [AppComponent]
+  })
+  export class AppModule { }
+```
+  <p>The multi: true option ensures that multiple interceptors can be registered if needed.</p>
+</ol>
+
+<h3>next()</h3>
+<p>In Angular interceptors, the next object represents the next interceptor in the chain. This chain of interceptors is executed in the order they are provided in the module.</p>
+<p>The final next in the chain is the HttpHandler responsible for sending the request to the server and receiving the server's response.</p>
+<p>Most interceptors in Angular call next.handle() to pass the request to the next interceptor in the chain or, if it's the last one, to the HttpHandler for actual HTTP request processing.</p>
+<p>This allows interceptors to perform actions before and after the actual HTTP request, such as modifying headers, logging, or handling responses.</p>
+<p>An interceptor has the option to skip calling next.handle() and short-circuit the chain. In such cases, the interceptor can return its own Observable with an artificial server response.</p>
+<p>This provides the ability to intercept the request, handle it independently, and return a custom response without involving the actual server. This behavior is akin to creating a middleware that stops the request/response flow in server-side frameworks like Express.js.</p>
+
+<p>Here's a basic example illustrating the concept of skipping next.handle() in an Angular interceptor:</p>
+
+```Typescript
+  import { Injectable } from '@angular/core';
+  import {
+    HttpInterceptor,
+    HttpRequest,
+    HttpHandler,
+    HttpEvent,
+    HttpResponse
+  } from '@angular/common/http';
+  import { Observable, of } from 'rxjs';
+
+  @Injectable()
+  export class MyInterceptor implements HttpInterceptor {
+    intercept(
+      request: HttpRequest<any>,
+      next: HttpHandler
+    ): Observable<HttpEvent<any>> {
+      // Check if a condition is met to short-circuit the chain
+      if (/* some condition */) {
+        // Skip calling next.handle() and return a custom response
+        const fakeResponse = new HttpResponse({
+          status: 200,
+          body: { message: 'Custom response from interceptor' }
+        });
+        return of(fakeResponse);
+      }
+
+      // Continue with the regular request flow
+      return next.handle(request);
+    }
+  }
+```
+
+<h3>Providing many interceptors</h3>
+<p>In your Angular module (e.g., app.module.ts), import the interceptors and add them to the providers array in the desired order.</p>
+
+```Typescript
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { AuthInterceptor } from './auth-interceptor';
+import { CachingInterceptor } from './caching-interceptor';
+import { EnsureHttpsInterceptor } from './ensure-https-interceptor';
+import { LoggingInterceptor } from './logging-interceptor';
+import { NoopInterceptor } from './noop-interceptor';
+import { TrimNameInterceptor } from './trim-name-interceptor';
+import { UploadInterceptor } from './upload-interceptor';
+
+/** Array of Http interceptor providers in outside-in order */
+export const httpInterceptorProviders = [
+  { provide: HTTP_INTERCEPTORS, useClass: NoopInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: EnsureHttpsInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: TrimNameInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: UploadInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: CachingInterceptor, multi: true },
+];
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    importProvidersFrom(HttpClientModule),
+    httpInterceptorProviders,
+  ]
+};
+```
+
+<p>Angular applies interceptors in the order that you provide them. For example, consider a situation in which you want to handle the authentication of your HTTP requests and log them before sending them to a server. To accomplish this task, you could provide an AuthInterceptor service and then a LoggingInterceptor service. Outgoing requests would flow from the AuthInterceptor to the LoggingInterceptor. Responses from these requests would flow in the other direction, from LoggingInterceptor back to AuthInterceptor. The following is a visual representation of the process:</p>
+<img src="https://angular.io/generated/images/guide/http/interceptor-order.svg">
+
+<h3>Pass metadata to interceptors</h3>
+<p>HttpClient requests contain a context that can carry metadata about the request. This context is available for interceptors to read or modify, though it is not transmitted to the backend server when the request is sent.</p>
+<p>Angular stores and retrieves a value in the context using an HttpContextToken. You can create a context token using the new operator, as in the following example:</p>
+
+```Typescript
+export const RETRY_COUNT = new HttpContextToken(() => 3);
+```
+<p>The lambda function () => 3 passed during the creation of the HttpContextToken serves two purposes:</p>
+<ul>
+  <li>It lets TypeScript infer the type of this token: <code>HttpContextToken <number></code> The request context is type-safe —reading a token from a request's context returns a value of the appropriate type.</li>
+  <li>It sets the default value for the token. This is the value that the request context returns if no other value was set for this token. Using a default value avoids the need to check if a particular value is set.</li>
+</ul>
+<p>When making a request, you can provide an HttpContext instance, in which you have already set the context values.</p>
+
+```Typescript
+this.httpClient
+    .get('/data/feed', {
+      context: new HttpContext().set(RETRY_COUNT, 5),
+    })
+    .subscribe(results => {/* ... */});
+```
+
+<p>Within an interceptor, you can read the value of a token in a given request's context with HttpContext.get(). If you have not explicitly set a value for the token, Angular returns the default value specified in the token.</p>
+
+```Typescript
+import {retry} from 'rxjs';
+
+export class RetryInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const retryCount = req.context.get(RETRY_COUNT);
+
+    return next.handle(req).pipe(
+        // Retry the request a configurable number of times.
+        retry(retryCount),
+    );
+  }
+}
+```
+
+<p>Unlike most other aspects of HttpRequest instances, the request context is mutable and persists across other immutable transformations of the request. This lets interceptors coordinate operations through the context. For instance, the RetryInterceptor example could use a second context token to track how many errors occur during the execution of a given request:</p>
+
+
+```Typescript
+import {retry, tap} from 'rxjs/operators';
+export const RETRY_COUNT = new HttpContextToken(() => 3);
+export const ERROR_COUNT = new HttpContextToken(() => 0);
+
+export class RetryInterceptor implements HttpInterceptor {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    const retryCount = req.context.get(RETRY_COUNT);
+
+    return next.handle(req).pipe(
+        tap({
+              // An error has occurred, so increment this request's ERROR_COUNT.
+             error: () => req.context.set(ERROR_COUNT, req.context.get(ERROR_COUNT) + 1)
+            }),
+        // Retry the request a configurable number of times.
+        retry(retryCount),
+    );
+  }
+}
+```
+
+<h3>Debouncing</h3>
+<p>If you need to make an HTTP request in response to user input, it's not efficient to send a request for every keystroke. It's better to wait until the user stops typing and then send a request. This technique is known as debouncing.</p>
+<p>The key components of debouncing include:</p>
+<ul>
+  <li><strong>Delay : </strong>The duration for which the system waits after the last invocation of the function before actually executing it. This delay is crucial for ensuring that the function is only called when the user stops typing or interacting with the input field.</li>
+  <li><strong>Triggering Event:</strong> The event that initiates the function call. In the case of user input, this is typically an input event like keystrokes.</li>
+</ul>
+<p>By incorporating debouncing, you strike a balance between responsiveness and efficiency. Users can still interact with the application in real-time, and server requests are made judiciously to avoid unnecessary overhead.</p>
+<p>By incorporating debouncing, you strike a balance between responsiveness and efficiency. Users can still interact with the application in real-time, and server requests are made judiciously to avoid unnecessary overhead.</p>
+
+```Typescript
+import { Component } from '@angular/core';
+import { Subject } from 'rxjs';
+import { debounceTime, switchMap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+
+@Component({
+  selector: 'app-debounced-search',
+  template: `
+    <input (input)="onInput($event.target.value)" />
+    <!-- Other component content -->
+  `
+})
+export class DebouncedSearchComponent {
+  private inputSubject = new Subject<string>();
+
+  constructor(private http: HttpClient) {
+    this.inputSubject.pipe(
+      debounceTime(300),
+        // Debounce for 300 milliseconds
+        distinctUntilChanged();
+      switchMap((input: string) => this.http.get(`https://api.example.com/search?q=${input}`))
+    ).subscribe(response => {
+      // Handle the server response
+      console.log(response);
+    });
+  }
+
+  onInput(input: string): void {
+    // Notify the inputSubject when there's user input
+    this.inputSubject.next(input);
+  }
+}
+=
+```
+
+<ul>
+  <li>The onInput method is called whenever there's user input.</li>
+  <li>The inputSubject is a subject that emits values whenever the user inputs something.</li>
+  <li>The debounceTime(300) operator ensures that the HTTP request is only made after 300 milliseconds of inactivity (no new input).</li>
+  <li>The switchMap operator cancels any ongoing HTTP requests if a new input arrives before the previous request completes.</li>
+  <li>distinctUntilChanged()  Wait until the search text changes.</li>
+</ul>

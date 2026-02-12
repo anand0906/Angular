@@ -1,4 +1,4 @@
-# Angular Components - Complete Guide
+# Angular Components
 
 ## Index
 
